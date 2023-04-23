@@ -16,7 +16,7 @@ public class BruteForce implements Cryptograph {
         return newFile;
     }
 
-    public void bruteForce(Path src, Path out) throws IOException {
+    public int bruteForce(Path src, Path out) throws IOException {
         int key = 0;
         try (BufferedReader srcFile = new BufferedReader(new FileReader(src.toString()), 8192)) {
             StringBuilder builder = new StringBuilder();
@@ -24,8 +24,8 @@ public class BruteForce implements Cryptograph {
             while (srcFile.ready()) {
                 char[] line = srcFile.readLine().toCharArray();
                 for (int i = 0; i < 50; i++) {
-                    for (int j = 0; j < line.length; j++) {
-                            builder.append((char) (line[j] + (-i)));
+                    for (char c : line) {
+                        builder.append((char) (c + (-i)));
                     }
                     String text = builder.toString();
                     if (text.contains(",") && text.contains(" ")) {
@@ -37,6 +37,7 @@ public class BruteForce implements Cryptograph {
             }
         }
         code(src, out, key);
+        return key;
     }
 
     @Override

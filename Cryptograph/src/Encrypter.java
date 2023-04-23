@@ -7,7 +7,7 @@ public class Encrypter implements Cryptograph {
     public Path createNewFile(Path srcPath) throws IOException {
         String srcFileName = srcPath.getFileName().toString();
         String srcFileExtension = srcFileName.substring(srcFileName.lastIndexOf("."));
-        String newFileName = srcFileName.substring(0, srcFileName.lastIndexOf('.')) + " Encrypted" + srcFileExtension;
+        String newFileName = srcFileName.substring(0, srcFileName.lastIndexOf('.')) + " Encrypt" + srcFileExtension;
         String parent = srcPath.getParent().toString();
         Path newFile = Path.of(parent, newFileName);
         if (Files.notExists(newFile)) {

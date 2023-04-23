@@ -7,7 +7,7 @@ public class Decrypter implements Cryptograph {
     public Path createNewFile(Path srcPath) throws IOException {
         String srcFileName = srcPath.getFileName().toString();
         String srcFileExtension = srcFileName.substring(srcFileName.lastIndexOf("."));
-        String newFileName = srcFileName.substring(0, srcFileName.lastIndexOf('.')) + " Decrypted" + srcFileExtension;
+        String newFileName = srcFileName.substring(0, srcFileName.lastIndexOf('.')) + " Decrypt" + srcFileExtension;
         String parent = srcPath.getParent().toString();
         Path newFile = Path.of(parent, newFileName);
         if (Files.notExists(newFile)) {
