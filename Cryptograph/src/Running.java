@@ -10,9 +10,9 @@ import java.nio.file.Path;
 public class Running {
 
     String[] args;
-    private static String operation;
-    private static String path;
-    private static int key;
+    private String operation;
+    private String path;
+    private int key;
 
 
     public Running(String[] args) {
@@ -20,14 +20,14 @@ public class Running {
     }
 
     public void run() {
-        if (args.length == 0) {
+        if (!args[0].equals("-bf") && args.length < 3) {
             app();
-        } else if (!args[0].equals("-bf") && args.length != 3) {
+        } else if (args[0].equals("-bf") && args.length < 2) {
             app();
         } else {
             operation = args[0];
             path = args[1];
-            key = Integer.parseInt(args[2]);
+            key = args[0].equals("-bf") ? 0 : Integer.parseInt(args[2]);
             coding(operation, path, key);
         }
     }
