@@ -1,10 +1,11 @@
-import Cryptographs.BruteForce;
-import Cryptographs.Cryptograph;
+import Cryptograph.Cryptograph;
 import GUI.CryptographGUI;
+import util.FileUtility;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class Running {
@@ -20,15 +21,17 @@ public class Running {
     }
 
     public void run() {
-        if (!args[0].equals("-bf") && args.length < 3) {
+        if (args.length == 0) {
             app();
-        } else if (args[0].equals("-bf") && args.length < 2) {
+        } else if (!"-bf".equals(args[0]) && args.length < 3) {
+            app();
+        } else if ("-bf".equals(args[0]) && args.length < 2) {
             app();
         } else {
             operation = args[0];
             path = args[1];
-            key = args[0].equals("-bf") ? 0 : Integer.parseInt(args[2]);
-            coding(operation, path, key);
+            key = "-bf".equals(args[0]) ? 0 : Integer.parseInt(args[2]);
+            coding(path, operation, key);
         }
     }
 
@@ -49,23 +52,30 @@ public class Running {
                 }
                 path = gui.path.getText();
 
-                coding(operation, path, key);
+                coding(path, operation, key);
                 JOptionPane.showMessageDialog(null, "Successfully", "Operation", JOptionPane.PLAIN_MESSAGE);
             }
         });
     }
 
-    private void coding(String operation, String path, int key) {
+    private void coding(String path, String operation, int key) {
         try {
-            Cryptograph cryptograph = Cryptograph.createCryptograph(operation);
+            Cryptograph cryptograph = new Cryptograph();
             Path srcFile = Path.of(path);
-            Path outFile;
-
-            if (cryptograph instanceof BruteForce) {
-                key = ((BruteForce) cryptograph).bruteForce(srcFile);
+            String text;
+            if ("-e".equals(operation)) {
+                text = cryptograph.encrypt(srcFile, key);
+            } else if ("-d".equals(operation)) {
+                text = cryptograph.decrypt(srcFile, key);
+            } else if ("-bf".equals(operation)) {
+                key = cryptograph.bruteForce(srcFile);
+                text = cryptograph.decrypt(srcFile, key);
+            } else {
+                JOptionPane.showMessageDialog(null, "Incorrect operation: " + operation, "Operation", JOptionPane.PLAIN_MESSAGE);
+                throw new IllegalArgumentException("Incorrect operation");
             }
-            outFile = cryptograph.createNewFile(srcFile);
-            cryptograph.codeText(srcFile, outFile, key);
+            Path outFile = FileUtility.createNewFile(srcFile, operation, key);
+            Files.writeString(outFile, text);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
