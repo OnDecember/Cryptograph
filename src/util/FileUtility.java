@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class FileUtility {
-    public static Path createNewFile(Path srcPath, String operation, int key) throws IOException {
+    public Path createNewFile(Path srcPath, String operation, int key) throws IOException {
         String suffix = "";
         if ("-e".equals(operation)) {
             suffix = " [ENCRYPTED]";

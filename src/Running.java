@@ -13,7 +13,7 @@ public class Running {
     String[] args;
     private String operation;
     private String path;
-    private int key;
+    private String key;
 
 
     public Running(String[] args) {
@@ -23,14 +23,10 @@ public class Running {
     public void run() {
         if (args.length == 0) {
             app();
-        } else if (!"-bf".equals(args[0]) && args.length < 3) {
-            app();
-        } else if ("-bf".equals(args[0]) && args.length < 2) {
-            app();
         } else {
             operation = args[0];
             path = args[1];
-            key = "-bf".equals(args[0]) ? 0 : Integer.parseInt(args[2]);
+            key = args.length < 3 ? "" : args[2];
             coding(path, operation, key);
         }
     }
@@ -43,12 +39,13 @@ public class Running {
             public void actionPerformed(ActionEvent e) {
                 if (gui.buttonE.isSelected()) {
                     operation = "-e";
-                    key = Integer.parseInt(gui.key.getText());
+                    key = gui.key.getText();
                 } else if (gui.buttonD.isSelected()) {
                     operation = "-d";
-                    key = Integer.parseInt(gui.key.getText());
+                    key = gui.key.getText();
                 } else {
                     operation = "-bf";
+                    key = gui.key.getText();
                 }
                 path = gui.path.getText();
 
@@ -58,23 +55,31 @@ public class Running {
         });
     }
 
-    private void coding(String path, String operation, int key) {
+    private void coding(String path, String operation, String key) {
         try {
             Cryptograph cryptograph = new Cryptograph();
+            FileUtility utility = new FileUtility();
             Path srcFile = Path.of(path);
             String text;
+            int intKey;
             if ("-e".equals(operation)) {
-                text = cryptograph.encrypt(srcFile, key);
+                intKey = Integer.parseInt(key);
+                text = cryptograph.encrypt(srcFile, intKey);
             } else if ("-d".equals(operation)) {
-                text = cryptograph.decrypt(srcFile, key);
-            } else if ("-bf".equals(operation)) {
-                key = cryptograph.bruteForce(srcFile);
-                text = cryptograph.decrypt(srcFile, key);
+                intKey = Integer.parseInt(key);
+                text = cryptograph.decrypt(srcFile, intKey);
+            } else if ("-bf".equals(operation) && args.length < 3 && "".equals(key)) {
+                intKey = cryptograph.bruteForce(srcFile);
+                text = cryptograph.decrypt(srcFile, intKey);
+            } else if ("-bf".equals(operation) && (args.length == 3 || !"".equals(key))) {
+                Path additionalFile = Path.of(key);
+                intKey = cryptograph.bruteForceStatistic(srcFile, additionalFile);
+                text = cryptograph.decrypt(srcFile, intKey);
             } else {
                 JOptionPane.showMessageDialog(null, "Incorrect operation: " + operation, "Operation", JOptionPane.PLAIN_MESSAGE);
                 throw new IllegalArgumentException("Incorrect operation");
             }
-            Path outFile = FileUtility.createNewFile(srcFile, operation, key);
+            Path outFile = utility.createNewFile(srcFile, operation, intKey);
             Files.writeString(outFile, text);
         } catch (IOException exception) {
             exception.printStackTrace();

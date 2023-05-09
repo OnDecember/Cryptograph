@@ -31,7 +31,7 @@ public class CryptographGUI extends JFrame {
         JLabel titleField = new JLabel("Enter path: ");
         container.add(titleField);
         container.add(path);
-        JLabel titleFieldKey = new JLabel("Enter key: ");
+        JLabel titleFieldKey = new JLabel("Enter key / path: ");
         container.add(titleFieldKey);
         container.add(key);
         JLabel titleFieldOperation = new JLabel("Choose an operation: ");
