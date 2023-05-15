@@ -79,7 +79,13 @@ public class Running {
                 JOptionPane.showMessageDialog(null, "Incorrect operation: " + operation, "Operation", JOptionPane.PLAIN_MESSAGE);
                 throw new IllegalArgumentException("Incorrect operation");
             }
-            Path outFile = utility.createNewFile(srcFile, operation, intKey);
+            Path outFile = null;
+            try {
+                outFile = utility.createNewFile(srcFile, operation, intKey);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "File not exist", "File", JOptionPane.PLAIN_MESSAGE);
+                throw new IllegalArgumentException("Incorrect file path");
+            }
             Files.writeString(outFile, text);
         } catch (IOException exception) {
             exception.printStackTrace();

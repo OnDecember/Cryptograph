@@ -15,6 +15,7 @@ public class Cryptograph {
     private final LanguageUtil util = new LanguageUtil();
 
     public String encrypt(Path src, int key) throws IOException {
+        key = validateKey(key);
         char[] charsText = Files.readString(src).toCharArray();
         StringBuilder builder = new StringBuilder();
         for (char symbol : charsText) {
@@ -24,6 +25,7 @@ public class Cryptograph {
     }
 
     public String decrypt(Path src, int key) throws IOException {
+        key = validateKey(key);
         char[] charsText = Files.readString(src).toCharArray();
         StringBuilder builder = new StringBuilder();
         for (char symbol : charsText) {
@@ -122,5 +124,9 @@ public class Cryptograph {
             chancesMap.put(characterIntegerEntry.getKey(), 1. * characterIntegerEntry.getValue() / length * 100);
         }
         return chancesMap;
+    }
+
+    private int validateKey(int key) {
+        return Math.abs(key);
     }
 }
